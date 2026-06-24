@@ -5,8 +5,7 @@
 AutoPilot AI is an Agentic AI-powered browser automation platform that converts natural language requirements into executable Playwright automation plans using a **free local LLM (Ollama + Qwen3)**.
 
 Instead of writing automation scripts manually, users simply describe the task in plain English and AutoPilot AI generates an execution plan and performs browser automation automatically.
-<img width="956" height="470" alt="image" src="https://github.com/user-attachments/assets/05da8a6d-345d-4932-822c-aa5f20c1c14f" />
-
+<img width="955" height="470" alt="image" src="https://github.com/user-attachments/assets/56ee6054-9172-47b1-9ad0-58c767f0d8b6" />
 
 ---
 
