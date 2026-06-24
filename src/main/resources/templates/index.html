@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>AutoPilot AI</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+
+            min-height:100vh;
+
+            font-family:'Segoe UI',sans-serif;
+
+            background:
+            linear-gradient(
+                    135deg,
+                    #050505,
+                    #121212,
+                    #1b1b1b,
+                    #050505);
+
+            display:flex;
+            justify-content:center;
+            align-items:center;
+
+            padding:40px;
+        }
+
+        .container{
+
+            width:100%;
+            max-width:1100px;
+
+            background:rgba(255,255,255,0.05);
+
+            backdrop-filter:blur(20px);
+
+            border-radius:25px;
+
+            padding:40px;
+
+            border:1px solid rgba(255,255,255,0.1);
+
+            box-shadow:
+                    0 8px 32px rgba(0,0,0,0.5);
+        }
+
+        h1{
+
+            text-align:center;
+
+            color:white;
+
+            font-size:48px;
+
+            margin-bottom:10px;
+        }
+
+        .subtitle{
+
+            text-align:center;
+
+            color:#bdbdbd;
+
+            margin-bottom:35px;
+        }
+
+        textarea{
+
+            width:100%;
+
+            height:180px;
+
+            border:none;
+
+            outline:none;
+
+            resize:none;
+
+            border-radius:15px;
+
+            padding:20px;
+
+            font-size:15px;
+
+            color:white;
+
+            background:
+            rgba(255,255,255,0.08);
+        }
+
+        textarea::placeholder{
+            color:#aaa;
+        }
+
+        button{
+
+            width:100%;
+
+            height:55px;
+
+            margin-top:20px;
+
+            border:none;
+
+            border-radius:15px;
+
+            color:white;
+
+            font-size:18px;
+
+            font-weight:bold;
+
+            cursor:pointer;
+
+            background:
+            linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed);
+        }
+
+        button:disabled{
+
+            opacity:0.7;
+
+            cursor:not-allowed;
+        }
+
+        .card{
+
+            margin-top:25px;
+
+            padding:20px;
+
+            border-radius:18px;
+
+            background:
+            rgba(255,255,255,0.05);
+
+            border:
+            1px solid rgba(255,255,255,0.08);
+        }
+
+        .title{
+
+            color:white;
+
+            margin-bottom:15px;
+
+            font-size:20px;
+        }
+
+        pre{
+
+            white-space:pre-wrap;
+
+            word-wrap:break-word;
+
+            color:#61dafb;
+
+            font-size:14px;
+        }
+
+        #result{
+
+            color:#7CFF8B;
+
+            white-space:pre-wrap;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>AutoPilot AI</h1>
+
+    <div class="subtitle">
+        Agentic Browser Automation Platform
+    </div>
+
+    <textarea
+            id="requirement"
+            placeholder="Example: Login to SauceDemo using standard_user and secret_sauce">
+    </textarea>
+
+    <button
+            id="executeBtn"
+            onclick="executeAgent()">
+
+        🚀 Generate & Execute Plan
+
+    </button>
+
+    <div class="card">
+
+        <div class="title">
+            🤖 AI Generated Action Plan
+        </div>
+
+        <pre id="actionPlan">
+Waiting...
+        </pre>
+
+    </div>
+
+    <div class="card">
+
+        <div class="title">
+            ✅ Execution Result
+        </div>
+
+        <div id="result">
+            Waiting...
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    async function executeAgent(){
+
+        const requirement =
+            document.getElementById(
+                "requirement").value;
+
+        const button =
+            document.getElementById(
+                "executeBtn");
+
+        const actionPlan =
+            document.getElementById(
+                "actionPlan");
+
+        const result =
+            document.getElementById(
+                "result");
+
+        if(!requirement.trim()){
+
+            alert(
+                "Please enter a requirement");
+
+            return;
+        }
+
+        button.disabled = true;
+
+        button.innerText =
+            "⏳ Generating Plan...";
+
+        actionPlan.innerText =
+            "Generating plan...";
+
+        result.innerText = "";
+
+        try{
+
+            const generateResponse =
+                await fetch(
+                    "/generate",
+                    {
+                        method:"POST",
+
+                        headers:{
+                            "Content-Type":
+                            "application/x-www-form-urlencoded"
+                        },
+
+                        body:
+                        "requirement="
+                        + encodeURIComponent(
+                            requirement)
+                    });
+
+            const plan =
+                await generateResponse.text();
+
+            actionPlan.innerText =
+                plan;
+
+            button.innerText =
+                "▶ Executing Plan...";
+
+            result.innerText =
+                "Executing browser automation...";
+
+            const executeResponse =
+                await fetch(
+                    "/run",
+                    {
+                        method:"POST",
+
+                        headers:{
+                            "Content-Type":
+                            "application/json"
+                        },
+
+                        body:plan
+                    });
+
+            const executionResult =
+                await executeResponse.json();
+
+            result.innerText =
+                executionResult.message;
+
+        }
+        catch(error){
+
+            result.innerText =
+                "Execution Failed : "
+                + error;
+        }
+
+        button.disabled = false;
+
+        button.innerText =
+            "🚀 Generate & Execute Plan";
+    }
+
+</script>
+
+</body>
+
+</html>
